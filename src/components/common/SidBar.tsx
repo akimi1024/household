@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { CSSProperties } from 'react'
 
 import Drawer from '@mui/material/Drawer';
 import Divider from '@mui/material/Divider';
@@ -12,6 +12,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import HomeIcon from '@mui/icons-material/Home';
 import EqualizerIcon from '@mui/icons-material/Equalizer';
 import { Box, Toolbar } from '@mui/material';
+import { NavLink } from 'react-router-dom';
 
 interface SidBarProps {
   drawerWidth: number,
@@ -26,6 +27,16 @@ interface menuItem {
   icon: React.ComponentType
 }
 
+const baseLinkStyle: CSSProperties = {
+  textDecoration: "none",
+  color: "inherit",
+  display: "block"
+}
+
+const activeLinkStyle: CSSProperties = {
+  backgroundColor: "rgba(0, 0, 0, 0.08)"
+}
+
 const SidBar = ({drawerWidth, mobileOpen, handleDrawerTransitionEnd, handleDrawerClose}:SidBarProps) => {
   const MenuItems: menuItem[] = [
     {text: "Home", path: "/", icon: HomeIcon},
@@ -38,15 +49,23 @@ const SidBar = ({drawerWidth, mobileOpen, handleDrawerTransitionEnd, handleDrawe
       <Divider />
       <List>
         {MenuItems.map((item, index) => (
-          <ListItem key={index} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
-                <item.icon />
-              </ListItemIcon>
-              <ListItemText primary={item.text} />
-            </ListItemButton>
-          </ListItem>
+          <NavLink key={item.text} to={item.path} style={({isActive}) => {
+            console.log("選択されたメニューは", item.text, isActive)
+            return {
+              ...baseLinkStyle,
+              ...(isActive ? activeLinkStyle : {})
+            }
+          }}>
+            <ListItem key={index} disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
+                  <item.icon />
+                </ListItemIcon>
+                <ListItemText primary={item.text} />
+              </ListItemButton>
+            </ListItem>
+          </NavLink>
         ))}
       </List>
      </div>
