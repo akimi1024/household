@@ -2,13 +2,11 @@ import React, { CSSProperties } from 'react'
 
 import Drawer from '@mui/material/Drawer';
 import Divider from '@mui/material/Divider';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import MailIcon from '@mui/icons-material/Mail';
 import HomeIcon from '@mui/icons-material/Home';
 import EqualizerIcon from '@mui/icons-material/Equalizer';
 import { Box, Toolbar } from '@mui/material';
@@ -74,7 +72,7 @@ const SidBar = ({drawerWidth, mobileOpen, handleDrawerTransitionEnd, handleDrawe
   return (
           <Box
           component="nav"
-          sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+          sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
           aria-label="mailbox folders"
         >
           {/* モバイル用 */}
@@ -98,7 +96,7 @@ const SidBar = ({drawerWidth, mobileOpen, handleDrawerTransitionEnd, handleDrawe
           <Drawer
             variant="permanent"
             sx={{
-              display: { xs: 'none', sm: 'block' },
+              display: { xs: 'none', md: 'block' },
               '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
             }}
             open
