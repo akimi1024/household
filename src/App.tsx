@@ -13,6 +13,12 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from './firebase';
 
 function App() {
+
+  // FireStoreエラーかどうかを判定する型ガード
+  function isFireStoreError(err: unknown): err is {code: string, message: string} {
+    return typeof err === "object" && err !== null && "code" in err
+  }
+
   const [transactions,setTransactions] = useState<Transaction[]>([]);
 
   useEffect(() => {
@@ -29,7 +35,11 @@ function App() {
 
         setTransactions(transactionData)
       }catch(err){
-
+          if(isFireStoreError(err)) {
+            console.error("firestoreエラー: ", err)
+          } else {
+            console.error("一般的なエラー: ", err)
+          }
       }
     }
 
