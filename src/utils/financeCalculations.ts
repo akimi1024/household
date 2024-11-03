@@ -13,7 +13,11 @@ export function financeCalculations(transactions: Transaction[]):balance  {
   },{income: 0, expense: 0, balance: 0})
 }
 
-
+/**
+ * 日付ごとの収支を計算
+ * @param transactions 
+ * @returns 
+ */
 export function calculateDailyBalances(transactions: Transaction[]): Record<string, balance> {
   return transactions.reduce<Record<string, balance>>((acc, transaction) => {
     const day = transaction.date;
