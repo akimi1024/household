@@ -54,6 +54,10 @@ const Calender = ({monthlyTransactions, setCurrentMonth}: CalenderProps) => {
     )
   }
 
+  /**
+   * 選択された月をセット
+   * @param dateSetInfo
+   */
   const handleDateSet = (dateSetInfo: DatesSetArg) => {
     setCurrentMonth(dateSetInfo.view.currentStart)
   }
