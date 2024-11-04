@@ -23,7 +23,7 @@ function App() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
-
+  // firestoreのデータを全て取得
   useEffect(() => {
     const fetchTransactions = async() => {
       try {
@@ -49,6 +49,7 @@ function App() {
     fetchTransactions();
   }, [])
 
+  // 一月分のデータのみ抽出
   const monthlyTransactions = transactions.filter((transaction) => {
     return transaction.date.startsWith(formatMonth(currentMonth));
   })
@@ -59,7 +60,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<AppLayout />}>
-          <Route index element={<Home  monthlyTransactions={monthlyTransactions}/>}/>
+          <Route index element={<Home  monthlyTransactions={monthlyTransactions} setCurrentMonth={setCurrentMonth}/>}/>
           <Route path="/report" element={<Report />}/>
           <Route path="*" element={<NoMatch />}/>
         </Route>

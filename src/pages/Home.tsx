@@ -7,16 +7,17 @@ import TransactionMenu from '../components/TransactionMenu'
 import { Transaction } from '../types'
 
 interface HomeProps {
-  monthlyTransactions: Transaction[]
+  monthlyTransactions: Transaction[],
+  setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>
 }
 
-const Home = ({monthlyTransactions}: HomeProps) => {
+const Home = ({monthlyTransactions, setCurrentMonth}: HomeProps ) => {
   return (
     <Box sx={{display: "Flex"}}>
       {/* 左側のコンテンツ */}
       <Box sx={{flexGrow: 1}}>
         <MonthlySummary monthlyTransactions={monthlyTransactions}/>
-        <Calender />
+        <Calender monthlyTransactions={monthlyTransactions} setCurrentMonth={setCurrentMonth}/>
       </Box>
 
       {/* 右側のコンテンツ */}
