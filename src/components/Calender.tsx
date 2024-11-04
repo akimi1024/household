@@ -7,13 +7,15 @@ import { DatesSetArg, EventContentArg } from '@fullcalendar/core'
 import { balance, CalenderContent, Transaction } from '../types'
 import { calculateDailyBalances } from '../utils/financeCalculations'
 import { formantCurrency } from '../utils/formatting'
+import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
 
 interface CalenderProps {
   monthlyTransactions: Transaction[],
-  setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>
+  setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>,
+  setCurrentDay: React.Dispatch<React.SetStateAction<string>>
 }
 
-const Calender = ({monthlyTransactions, setCurrentMonth}: CalenderProps) => {
+const Calender = ({monthlyTransactions, setCurrentMonth, setCurrentDay}: CalenderProps) => {
 
   // 日付ごとの収支を計算
   const dailyBalances = calculateDailyBalances(monthlyTransactions)
@@ -55,21 +57,26 @@ const Calender = ({monthlyTransactions, setCurrentMonth}: CalenderProps) => {
   }
 
   /**
-   * 選択された月をセット
+   * 月の日付を取得
    * @param dateSetInfo
    */
   const handleDateSet = (dateSetInfo: DatesSetArg) => {
     setCurrentMonth(dateSetInfo.view.currentStart)
   }
 
+  const handleDateClick = (dateInfo: DateClickArg) => {
+    setCurrentDay(dateInfo.dateStr)
+  }
+
   return (
     <FullCalendar
       locale={jaLocale}
-      plugins={[dayGridPlugin]}
+      plugins={[dayGridPlugin, interactionPlugin]}
       initialView='dayGridMonth'
       events={calenderEvents}
       eventContent={renderEventContent}
       datesSet={handleDateSet}
+      dateClick={handleDateClick}
     />
   )
 }
