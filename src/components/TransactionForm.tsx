@@ -12,6 +12,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close"; // 閉じるボタン用のアイコン
 import FastfoodIcon from "@mui/icons-material/Fastfood"; //食事アイコン
 import { Controller, useForm } from "react-hook-form";
+import { useEffect } from "react";
 
 interface TransactionFormProps {
   isEntryDrawerOpen: boolean,
@@ -19,10 +20,12 @@ interface TransactionFormProps {
   currentDay: string
 }
 
+type incomeExpense = "income" | "expense"
+
 const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay }: TransactionFormProps) => {
   const formWidth = 320;
 
-  const { control } = useForm({
+  const { control, setValue, watch } = useForm({
     defaultValues: {
       type: "expense",
       date: currentDay,
@@ -31,6 +34,19 @@ const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay }: Transac
       content: ""
     }
   })
+
+  // 押下された収支タイプをセット
+  const incomeExpenseToggle = (type: incomeExpense) => {
+    setValue("type", type)
+  }
+
+  // 収支タイプを監視
+  const currentType = watch("type")
+
+  useEffect(() => {
+    setValue("date", currentDay)
+  }, [currentDay, setValue])
+
   return (
     <Box
       sx={{
@@ -71,14 +87,22 @@ const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay }: Transac
           <Controller
             name="type"
             control={control}
-            render={() => (
+            render={({field}) => {
+              return (
               <ButtonGroup fullWidth>
-                <Button variant={"contained"} color="error">
+                <Button
+                  variant={field.value === "expense" ? "contained" : "outlined"}
+                  color="error"
+                  onClick={() => incomeExpenseToggle("expense")}>
                   支出
                 </Button>
-                <Button>収入</Button>
+                <Button
+                  variant={field.value === "income" ? "contained" : "outlined"}
+                  color={"primary"}
+                  onClick={() => incomeExpenseToggle("income")}>収入</Button>
               </ButtonGroup>
-            )}
+              )
+            }}
           />
 
           {/* 日付 */}
@@ -87,13 +111,14 @@ const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay }: Transac
             control={control}
             render={({ field }) => (
               <TextField
-                {...{ field }}
+                {...field}
                 label="日付"
                 type="date"
                 InputLabelProps={{
                   shrink: true,
                 }} />
-            )}
+              )
+            }
           />
 
           {/* カテゴリ */}
@@ -131,7 +156,7 @@ const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay }: Transac
           />
 
           {/* 保存ボタン */}
-          <Button type="submit" variant="contained" color={"primary"} fullWidth>
+          <Button type="submit" variant="contained" color={currentType === "income" ? "primary" : "error"} fullWidth>
             保存
           </Button>
         </Stack>
