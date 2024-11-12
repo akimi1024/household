@@ -23,6 +23,7 @@ import SavingsIcon from "@mui/icons-material/Savings"
 import { Controller, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { ExpenseCategory, IncomeCategory } from "../types";
+import { parse } from "path";
 
 interface TransactionFormProps {
   isEntryDrawerOpen: boolean,
@@ -179,8 +180,17 @@ const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay }: Transac
             name="amount"
             control={control}
             render={({ field }) => (
-              <TextField {...field} label="金額" type="number" />
-            )}
+              <TextField
+                {...field}
+                value={field.value === 0 ? "" : field.value}
+                onChange={(e) => {
+                  const newValue = parseInt(e.target.value, 10) || 0
+                  field.onChange(newValue)
+                }}
+                label="金額"
+                type="number" />
+            )
+            }
           />
 
           {/* 内容 */}
