@@ -11,8 +11,18 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close"; // 閉じるボタン用のアイコン
 import FastfoodIcon from "@mui/icons-material/Fastfood"; //食事アイコン
+import AlarmIcon from "@mui/icons-material/Alarm"
+import AddHomeIcon from "@mui/icons-material/AddHome"
+import DiversityIcon from "@mui/icons-material/Diversity3"
+import SportsTennisIcon from "@mui/icons-material/SportsTennis"
+import TrainIcon from "@mui/icons-material/Train"
+import WorkIcon from "@mui/icons-material/Work"
+import AddBusinessIcon from "@mui/icons-material/AddBusiness"
+import SavingsIcon from "@mui/icons-material/Savings"
 import { Controller, useForm } from "react-hook-form";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { ExpenseCategory, IncomeCategory } from "../types";
+import { Category } from "@mui/icons-material";
 
 interface TransactionFormProps {
   isEntryDrawerOpen: boolean,
@@ -22,8 +32,30 @@ interface TransactionFormProps {
 
 type incomeExpense = "income" | "expense"
 
+interface CategoryItem {
+  label: IncomeCategory | ExpenseCategory
+  icon: JSX.Element
+}
+
 const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay }: TransactionFormProps) => {
   const formWidth = 320;
+
+  const expenseCategories: CategoryItem[] = [
+    { label: "食費", icon: <FastfoodIcon fontSize="small" /> },
+    { label: "日用品", icon: <AlarmIcon fontSize="small" /> },
+    { label: "住居費", icon: <AddHomeIcon fontSize="small" /> },
+    { label: "交際費", icon: <DiversityIcon fontSize="small" /> },
+    { label: "娯楽", icon: <SportsTennisIcon fontSize="small" /> },
+    { label: "交通費", icon: <TrainIcon fontSize="small" /> },
+  ]
+
+  const incomeCategories: CategoryItem[] = [
+    { label: "給与", icon: <WorkIcon fontSize="small" /> },
+    { label: "副収入", icon: <AddBusinessIcon fontSize="small" /> },
+    { label: "お小遣い", icon: <SavingsIcon fontSize="small" /> },
+  ]
+
+  const [categories, setCategories] = useState(expenseCategories)
 
   const { control, setValue, watch } = useForm({
     defaultValues: {
@@ -42,6 +74,11 @@ const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay }: Transac
 
   // 収支タイプを監視
   const currentType = watch("type")
+
+  useEffect(() => {
+    const newCategories = currentType === "expense" ? expenseCategories : incomeCategories
+    setCategories(newCategories)
+  }, [currentType, expenseCategories, incomeCategories])
 
   useEffect(() => {
     setValue("date", currentDay)
@@ -87,20 +124,20 @@ const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay }: Transac
           <Controller
             name="type"
             control={control}
-            render={({field}) => {
+            render={({ field }) => {
               return (
-              <ButtonGroup fullWidth>
-                <Button
-                  variant={field.value === "expense" ? "contained" : "outlined"}
-                  color="error"
-                  onClick={() => incomeExpenseToggle("expense")}>
-                  支出
-                </Button>
-                <Button
-                  variant={field.value === "income" ? "contained" : "outlined"}
-                  color={"primary"}
-                  onClick={() => incomeExpenseToggle("income")}>収入</Button>
-              </ButtonGroup>
+                <ButtonGroup fullWidth>
+                  <Button
+                    variant={field.value === "expense" ? "contained" : "outlined"}
+                    color="error"
+                    onClick={() => incomeExpenseToggle("expense")}>
+                    支出
+                  </Button>
+                  <Button
+                    variant={field.value === "income" ? "contained" : "outlined"}
+                    color={"primary"}
+                    onClick={() => incomeExpenseToggle("income")}>収入</Button>
+                </ButtonGroup>
               )
             }}
           />
@@ -117,7 +154,7 @@ const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay }: Transac
                 InputLabelProps={{
                   shrink: true,
                 }} />
-              )
+            )
             }
           />
 
@@ -125,15 +162,15 @@ const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay }: Transac
           <Controller
             name="category"
             control={control}
-            render={({field}) => (
+            render={({ field }) => (
               <TextField {...field} id="カテゴリ" label="カテゴリ" select>
-              <MenuItem value={"食費"}>
-                <ListItemIcon>
-                  <FastfoodIcon />
-                </ListItemIcon>
-                食費
-              </MenuItem>
-            </TextField>
+                {categories.map((category) => (
+                  <MenuItem value={category.label}>
+                    <ListItemIcon>{category.icon}</ListItemIcon>
+                    {category.label}
+                  </MenuItem>
+                ))}
+              </TextField>
             )}
           />
 
@@ -141,7 +178,7 @@ const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay }: Transac
           <Controller
             name="amount"
             control={control}
-            render={({field}) => (
+            render={({ field }) => (
               <TextField {...field} label="金額" type="number" />
             )}
           />
@@ -150,7 +187,7 @@ const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay }: Transac
           <Controller
             name="content"
             control={control}
-            render={({field}) => (
+            render={({ field }) => (
               <TextField {...field} label="内容" type="text" />
             )}
           />
