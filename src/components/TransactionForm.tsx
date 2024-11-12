@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Box,
   Button,
@@ -22,7 +23,6 @@ import SavingsIcon from "@mui/icons-material/Savings"
 import { Controller, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { ExpenseCategory, IncomeCategory } from "../types";
-import { Category } from "@mui/icons-material";
 
 interface TransactionFormProps {
   isEntryDrawerOpen: boolean,
@@ -78,7 +78,7 @@ const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay }: Transac
   useEffect(() => {
     const newCategories = currentType === "expense" ? expenseCategories : incomeCategories
     setCategories(newCategories)
-  }, [currentType, expenseCategories, incomeCategories])
+  }, [currentType])
 
   useEffect(() => {
     setValue("date", currentDay)
