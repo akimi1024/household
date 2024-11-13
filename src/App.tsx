@@ -68,6 +68,7 @@ function App() {
         ...transaction
       }as Transaction
 
+      // 保存したデータをロードせずに表示するように変更
       setTransactions((prevTransaction) => [
         ...prevTransaction,
         newTransaction

@@ -60,7 +60,7 @@ const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay, onSaveTra
 
   const [categories, setCategories] = useState(expenseCategories)
 
-  const { control, setValue, watch, formState: { errors }, handleSubmit, }
+  const { control, setValue, watch, formState: { errors }, handleSubmit, reset }
   = useForm<Schema>({
     defaultValues: {
       type: "expense",
@@ -75,6 +75,7 @@ const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay, onSaveTra
   // 押下された収支タイプをセット
   const incomeExpenseToggle = (type: incomeExpense) => {
     setValue("type", type)
+    setValue("category", "")
   }
 
   // 収支タイプを監視
@@ -90,6 +91,14 @@ const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay, onSaveTra
   const onSubmit:SubmitHandler<Schema> = (data) => {
     console.log(data)
     onSaveTransaction(data)
+
+    reset({
+      type: "expense",
+      date: currentDay,
+      amount: 0,
+      category: "",
+      content: ""
+    })
   }
 
   useEffect(() => {
