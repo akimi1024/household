@@ -20,16 +20,17 @@ import TrainIcon from "@mui/icons-material/Train"
 import WorkIcon from "@mui/icons-material/Work"
 import AddBusinessIcon from "@mui/icons-material/AddBusiness"
 import SavingsIcon from "@mui/icons-material/Savings"
-import { Controller, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { ExpenseCategory, IncomeCategory } from "../types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { transactionSchema } from "../validations/schema";
+import { Schema, transactionSchema } from "../validations/Schema";
 
 interface TransactionFormProps {
   isEntryDrawerOpen: boolean,
   onCloseForm: () => void,
-  currentDay: string
+  currentDay: string,
+  onSaveTransaction: (transaction: Schema) => Promise<void>
 }
 
 type incomeExpense = "income" | "expense"
@@ -39,7 +40,7 @@ interface CategoryItem {
   icon: JSX.Element
 }
 
-const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay }: TransactionFormProps) => {
+const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay, onSaveTransaction }: TransactionFormProps) => {
   const formWidth = 320;
 
   const expenseCategories: CategoryItem[] = [
@@ -59,7 +60,8 @@ const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay }: Transac
 
   const [categories, setCategories] = useState(expenseCategories)
 
-  const { control, setValue, watch, formState: { errors }, handleSubmit } = useForm({
+  const { control, setValue, watch, formState: { errors }, handleSubmit, }
+  = useForm<Schema>({
     defaultValues: {
       type: "expense",
       date: currentDay,
@@ -84,8 +86,10 @@ const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay }: Transac
     setCategories(newCategories)
   }, [currentType])
 
-  const onSubmit = (data: any) => {
-
+  // 送信処理
+  const onSubmit:SubmitHandler<Schema> = (data) => {
+    console.log(data)
+    onSaveTransaction(data)
   }
 
   useEffect(() => {
