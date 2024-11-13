@@ -23,6 +23,7 @@ function App() {
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
 
   // firestoreのデータを全て取得
   useEffect(() => {
@@ -92,6 +93,8 @@ function App() {
               monthlyTransactions={monthlyTransactions}
               setCurrentMonth={setCurrentMonth}
               onSaveTransaction={handleSaveTransaction}
+              selectedTransaction={selectedTransaction}
+              setSelectedTransaction={setSelectedTransaction}
               />}
             />
             <Route path="/report" element={<Report />} />
