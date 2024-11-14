@@ -9,7 +9,7 @@ import { theme } from './theme/theme'
 import { ThemeProvider } from '@emotion/react';
 import { CssBaseline } from '@mui/material';
 import { Transaction } from './types/index';
-import { addDoc, collection, getDocs } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { db } from './firebase';
 import { formatMonth } from './utils/formatting';
 import { Schema } from './validations/Schema';
@@ -23,7 +23,7 @@ function App() {
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+
 
   // firestoreのデータを全て取得
   useEffect(() => {
@@ -56,7 +56,10 @@ function App() {
     return transaction.date.startsWith(formatMonth(currentMonth));
   })
 
-  // 取引データを保存する処理
+  /**
+   * 取引データ保存処理
+   * @param transaction
+   */
   const handleSaveTransaction = async (transaction: Schema) => {
     console.log(transaction)
     try {
@@ -83,6 +86,23 @@ function App() {
     }
   }
 
+  /**
+   * データ削除処理
+   * @param transactionId
+   */
+  const handleDeleteTransaction = async (transactionId: string) => {
+    // firestoreのデータを削除
+    try{
+      await deleteDoc(doc(db, "Transactions", transactionId));
+    } catch (err) {
+      if (isFireStoreError(err)) {
+        console.error("firestoreエラー: ", err)
+      } else {
+        console.error("一般的なエラー: ", err)
+      }
+    }
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -93,8 +113,7 @@ function App() {
               monthlyTransactions={monthlyTransactions}
               setCurrentMonth={setCurrentMonth}
               onSaveTransaction={handleSaveTransaction}
-              selectedTransaction={selectedTransaction}
-              setSelectedTransaction={setSelectedTransaction}
+              onDeleteTransaction={handleDeleteTransaction}
               />}
             />
             <Route path="/report" element={<Report />} />

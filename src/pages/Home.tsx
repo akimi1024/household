@@ -12,14 +12,14 @@ interface HomeProps {
   monthlyTransactions: Transaction[],
   setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>,
   onSaveTransaction: (transaction: Schema) => Promise<void>,
-  selectedTransaction: Transaction | null,
-  setSelectedTransaction: React.Dispatch<React.SetStateAction<Transaction | null>>
+  onDeleteTransaction: (transactionId: string) => Promise<void>
 }
 
-const Home = ({ monthlyTransactions, setCurrentMonth, onSaveTransaction, selectedTransaction, setSelectedTransaction }: HomeProps) => {
+const Home = ({ monthlyTransactions, setCurrentMonth, onSaveTransaction, onDeleteTransaction }: HomeProps) => {
   const today = format(new Date(), "yyyy-MM-dd")
   const [currentDay, setCurrentDay] = useState(today)
   const [isEntryDrawerOpen, setIsEntryDrawerOpen] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
 
   const dailyTransactions = monthlyTransactions.filter((transaction) => {
     return transaction.date === currentDay
@@ -73,7 +73,9 @@ const Home = ({ monthlyTransactions, setCurrentMonth, onSaveTransaction, selecte
           onCloseForm={CloseForm}
           currentDay={currentDay}
           onSaveTransaction={onSaveTransaction}
-          selectedTransaction={selectedTransaction} />
+          selectedTransaction={selectedTransaction}
+          onDeleteTransaction={onDeleteTransaction}
+        />
       </Box>
     </Box>
   )

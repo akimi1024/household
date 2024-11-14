@@ -31,7 +31,8 @@ interface TransactionFormProps {
   onCloseForm: () => void,
   currentDay: string,
   onSaveTransaction: (transaction: Schema) => Promise<void>,
-  selectedTransaction: Transaction | null
+  selectedTransaction: Transaction | null,
+  onDeleteTransaction: (transactionId: string) => Promise<void>
 }
 
 type incomeExpense = "income" | "expense"
@@ -41,7 +42,14 @@ interface CategoryItem {
   icon: JSX.Element
 }
 
-const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay, onSaveTransaction, selectedTransaction }: TransactionFormProps) => {
+const TransactionForm = ({
+  isEntryDrawerOpen,
+  onCloseForm,
+  currentDay,
+  onSaveTransaction,
+  selectedTransaction,
+  onDeleteTransaction
+}: TransactionFormProps) => {
   const formWidth = 320;
 
   const expenseCategories: CategoryItem[] = [
@@ -62,16 +70,16 @@ const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay, onSaveTra
   const [categories, setCategories] = useState(expenseCategories)
 
   const { control, setValue, watch, formState: { errors }, handleSubmit, reset }
-  = useForm<Schema>({
-    defaultValues: {
-      type: "expense",
-      date: currentDay,
-      amount: 0,
-      category: "",
-      content: ""
-    },
-    resolver: zodResolver(transactionSchema)
-  })
+    = useForm<Schema>({
+      defaultValues: {
+        type: "expense",
+        date: currentDay,
+        amount: 0,
+        category: "",
+        content: ""
+      },
+      resolver: zodResolver(transactionSchema)
+    })
 
   // 押下された収支タイプをセット
   const incomeExpenseToggle = (type: incomeExpense) => {
@@ -89,7 +97,7 @@ const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay, onSaveTra
   }, [currentType])
 
   // 送信処理
-  const onSubmit:SubmitHandler<Schema> = (data) => {
+  const onSubmit: SubmitHandler<Schema> = (data) => {
     console.log(data)
     onSaveTransaction(data)
 
@@ -103,13 +111,13 @@ const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay, onSaveTra
   }
 
   useEffect(() => {
-    if(selectedTransaction) {
+    if (selectedTransaction) {
       setValue("type", selectedTransaction.type)
       setValue("date", selectedTransaction.date)
       setValue("amount", selectedTransaction.amount)
       setValue("category", selectedTransaction.category)
       setValue("content", selectedTransaction.content)
-    }else{
+    } else {
       reset({
         type: "expense",
         date: currentDay,
@@ -123,6 +131,12 @@ const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay, onSaveTra
   useEffect(() => {
     setValue("date", currentDay)
   }, [currentDay, setValue])
+
+  const handleDelete = () => {
+    if(selectedTransaction) {
+      onDeleteTransaction(selectedTransaction.id)
+    }
+  }
 
   return (
     <Box
@@ -207,11 +221,11 @@ const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay, onSaveTra
             control={control}
             render={({ field }) => (
               <TextField
-              error={!!errors.category}
-              helperText={errors.category?.message}
-              {...field}
-              id="カテゴリ"
-              label="カテゴリ" select>
+                error={!!errors.category}
+                helperText={errors.category?.message}
+                {...field}
+                id="カテゴリ"
+                label="カテゴリ" select>
                 {categories.map((category, index) => (
                   <MenuItem value={category.label} key={index}>
                     <ListItemIcon>{category.icon}</ListItemIcon>
@@ -237,7 +251,7 @@ const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay, onSaveTra
                 label="金額"
                 type="number"
                 error={!!errors.amount}
-                helperText={errors.amount?.message}/>
+                helperText={errors.amount?.message} />
             )
             }
           />
@@ -248,11 +262,11 @@ const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay, onSaveTra
             control={control}
             render={({ field }) => (
               <TextField
-              {...field}
-              label="内容"
-              type="text"
-              error={!!errors.content}
-              helperText={errors.content?.message}/>
+                {...field}
+                label="内容"
+                type="text"
+                error={!!errors.content}
+                helperText={errors.content?.message} />
             )}
           />
 
@@ -260,9 +274,17 @@ const TransactionForm = ({ isEntryDrawerOpen, onCloseForm, currentDay, onSaveTra
           <Button type="submit" variant="contained" color={currentType === "income" ? "primary" : "error"} fullWidth>
             保存
           </Button>
+
+          {/* 削除ボタン */}
+          {selectedTransaction && (
+            <Button onClick={handleDelete} variant="outlined" color={"secondary"} fullWidth>
+              削除
+            </Button>
+          )}
+
         </Stack>
       </Box>
-    </Box>
+    </Box >
   );
 };
 export default TransactionForm;
