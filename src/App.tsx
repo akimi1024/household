@@ -91,9 +91,12 @@ function App() {
    * @param transactionId
    */
   const handleDeleteTransaction = async (transactionId: string) => {
-    // firestoreのデータを削除
     try{
+      // firestoreのデータを削除
       await deleteDoc(doc(db, "Transactions", transactionId));
+
+      const filteredTransaction = transactions.filter((transaction) => transaction.id !== transactionId)
+      setTransactions(filteredTransaction)
     } catch (err) {
       if (isFireStoreError(err)) {
         console.error("firestoreエラー: ", err)
