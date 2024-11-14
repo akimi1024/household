@@ -16,7 +16,7 @@ interface HomeProps {
   setSelectedTransaction: React.Dispatch<React.SetStateAction<Transaction | null>>
 }
 
-const Home = ({monthlyTransactions, setCurrentMonth, onSaveTransaction, selectedTransaction, setSelectedTransaction}: HomeProps ) => {
+const Home = ({ monthlyTransactions, setCurrentMonth, onSaveTransaction, selectedTransaction, setSelectedTransaction }: HomeProps) => {
   const today = format(new Date(), "yyyy-MM-dd")
   const [currentDay, setCurrentDay] = useState(today)
   const [isEntryDrawerOpen, setIsEntryDrawerOpen] = useState(false);
@@ -28,12 +28,18 @@ const Home = ({monthlyTransactions, setCurrentMonth, onSaveTransaction, selected
   // 閉じるボタン押下判定
   const CloseForm = () => {
     setIsEntryDrawerOpen(!isEntryDrawerOpen)
+    setSelectedTransaction(null)
   }
 
   // フォームの開閉処理
   const handleAddTransactionForm = () => {
-    setIsEntryDrawerOpen(!isEntryDrawerOpen)
+    if (selectedTransaction) {
+      setSelectedTransaction(null)
+    } else {
+      setIsEntryDrawerOpen(!isEntryDrawerOpen)
+    }
   }
+
 
   // 取引が選択された時の処理
   const handleSelectTransaction = (transaction: Transaction) => {
@@ -43,16 +49,16 @@ const Home = ({monthlyTransactions, setCurrentMonth, onSaveTransaction, selected
   }
 
   return (
-    <Box sx={{display: "Flex"}}>
+    <Box sx={{ display: "Flex" }}>
       {/* 左側のコンテンツ */}
-      <Box sx={{flexGrow: 1}}>
-        <MonthlySummary monthlyTransactions={monthlyTransactions}/>
+      <Box sx={{ flexGrow: 1 }}>
+        <MonthlySummary monthlyTransactions={monthlyTransactions} />
         <Calender
           monthlyTransactions={monthlyTransactions}
           setCurrentMonth={setCurrentMonth}
           setCurrentDay={setCurrentDay}
           currentDay={currentDay}
-          today = {today}/>
+          today={today} />
       </Box>
 
       {/* 右側のコンテンツ */}
@@ -61,13 +67,13 @@ const Home = ({monthlyTransactions, setCurrentMonth, onSaveTransaction, selected
           dailyTransactions={dailyTransactions}
           currentDay={currentDay}
           handleAddTransactionForm={handleAddTransactionForm}
-          onSelectTransaction={handleSelectTransaction}/>
+          onSelectTransaction={handleSelectTransaction} />
         <TransactionForm
           isEntryDrawerOpen={isEntryDrawerOpen}
           onCloseForm={CloseForm}
           currentDay={currentDay}
           onSaveTransaction={onSaveTransaction}
-          selectedTransaction={selectedTransaction}/>
+          selectedTransaction={selectedTransaction} />
       </Box>
     </Box>
   )
