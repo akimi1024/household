@@ -9,7 +9,7 @@ import { theme } from './theme/theme'
 import { ThemeProvider } from '@emotion/react';
 import { CssBaseline } from '@mui/material';
 import { Transaction } from './types/index';
-import { addDoc, collection, deleteDoc, doc, getDocs } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDocs, updateDoc } from "firebase/firestore";
 import { db } from './firebase';
 import { formatMonth } from './utils/formatting';
 import { Schema } from './validations/Schema';
@@ -70,7 +70,7 @@ function App() {
       const newTransaction = {
         id: docRef.id,
         ...transaction
-      }as Transaction
+      } as Transaction
 
       // 保存したデータをロードせずに表示するように変更
       setTransactions((prevTransaction) => [
@@ -91,12 +91,32 @@ function App() {
    * @param transactionId
    */
   const handleDeleteTransaction = async (transactionId: string) => {
-    try{
+    try {
       // firestoreのデータを削除
       await deleteDoc(doc(db, "Transactions", transactionId));
 
       const filteredTransaction = transactions.filter((transaction) => transaction.id !== transactionId)
       setTransactions(filteredTransaction)
+    } catch (err) {
+      if (isFireStoreError(err)) {
+        console.error("firestoreエラー: ", err)
+      } else {
+        console.error("一般的なエラー: ", err)
+      }
+    }
+  }
+
+  /**
+   * データ更新処理
+   * @param transaction
+   * @param transactionId
+   */
+  const handleUpdateTransaction = async (transaction: Schema, transactionId: string) => {
+    try {
+      const docRef = doc(db, "Transactions", transactionId);
+
+      // Set the "capital" field of the city 'DC'
+      await updateDoc(docRef, transaction);
     } catch (err) {
       if (isFireStoreError(err)) {
         console.error("firestoreエラー: ", err)
@@ -117,7 +137,8 @@ function App() {
               setCurrentMonth={setCurrentMonth}
               onSaveTransaction={handleSaveTransaction}
               onDeleteTransaction={handleDeleteTransaction}
-              />}
+              onUpdateTransaction={handleUpdateTransaction}
+            />}
             />
             <Route path="/report" element={<Report />} />
             <Route path="*" element={<NoMatch />} />
