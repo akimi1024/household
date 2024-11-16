@@ -26,9 +26,9 @@ function MonthlySummary({monthlyTransactions}: MonthlySummaryProps) {
               <ArrowUpwardIcon sx={{fontSize: "2erm"}} />
               <Typography>収入</Typography>
             </Stack>
-              <Typography 
-              textAlign={"right"} 
-              variant="h5" 
+              <Typography
+              textAlign={"right"}
+              variant="h5"
               fontWeight={"fontWeightBold"}
               sx={{wordBreak: "break-word",
               fontSize: {xs: ".8rem", sm: "1rem", md: "1.2rem"},
@@ -51,9 +51,9 @@ function MonthlySummary({monthlyTransactions}: MonthlySummaryProps) {
               <ArrowDownwardIcon sx={{fontSize: "2erm"}} />
               <Typography>支出</Typography>
             </Stack>
-              <Typography 
-              textAlign={"right"} 
-              variant="h5" 
+              <Typography
+              textAlign={"right"}
+              variant="h5"
               fontWeight={"fontWeightBold"}
               sx={{wordBreak: "break-word",
               fontSize: {xs: ".8rem", sm: "1rem", md: "1.2rem"},
@@ -76,9 +76,9 @@ function MonthlySummary({monthlyTransactions}: MonthlySummaryProps) {
               <AccountBalanceIcon sx={{fontSize: "2erm"}} />
               <Typography>収入</Typography>
             </Stack>
-              <Typography 
-              textAlign={"right"} 
-              variant="h5" 
+              <Typography
+              textAlign={"right"}
+              variant="h5"
               fontWeight={"fontWeightBold"}
               sx={{wordBreak: "break-word",
               fontSize: {xs: ".8rem", sm: "1rem", md: "1.2rem"},
