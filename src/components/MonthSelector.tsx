@@ -11,14 +11,22 @@ interface MonthSelectorProps {
 
 const MonthSelector = ({currentMonth, setCurrentMonth}: MonthSelectorProps) => {
 
+  // 先月押下時のセット処理
   const handlePreviousMonth = () => {
     const previousMonth = addMonths(currentMonth, -1)
     setCurrentMonth(previousMonth)
   }
 
+  // 翌月押下時のセット処理
   const handleNextMonth = () => {
     const nextMonth = addMonths(currentMonth, 1)
     setCurrentMonth(nextMonth)
+  }
+
+  const handleDateChange = (newDate: Date | null) => {
+    if(newDate){
+      setCurrentMonth(newDate)
+    }
   }
 
   return (
@@ -31,6 +39,7 @@ const MonthSelector = ({currentMonth, setCurrentMonth}: MonthSelectorProps) => {
         先月
       </Button>
       <DatePicker
+        onChange={handleDateChange}
         value={currentMonth}
         label="年月を選択"
         sx={{mx: 2, background: "white"}}
