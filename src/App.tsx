@@ -23,6 +23,7 @@ function App() {
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [isLoading, setIsLoading] = useState(true)
 
 
   // firestoreのデータを全て取得
@@ -45,6 +46,8 @@ function App() {
         } else {
           console.error("一般的なエラー: ", err)
         }
+      } finally {
+        setIsLoading(false)
       }
     }
 
@@ -144,7 +147,12 @@ function App() {
               onUpdateTransaction={handleUpdateTransaction}
             />}
             />
-            <Route path="/report" element={<Report currentMonth={currentMonth} setCurrentMonth={setCurrentMonth}/>} />
+            <Route path="/report" element={<Report
+              currentMonth={currentMonth}
+              setCurrentMonth={setCurrentMonth}
+              monthlyTransactions={monthlyTransactions}
+              isLoading={isLoading}/>
+            }/>
             <Route path="*" element={<NoMatch />} />
           </Route>
         </Routes>

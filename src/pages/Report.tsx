@@ -4,17 +4,21 @@ import CategoryChart from '../components/CategoryChart';
 
 import TransactionTable from '../components/TransactionTable';
 import BarChart from '../components/BarChart';
+import { Transaction } from '../types';
 
 interface ReportProps{
   currentMonth: Date,
-  setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>
+  setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>,
+  monthlyTransactions: Transaction[],
+  isLoading: boolean
 }
 
-const Report = ({currentMonth, setCurrentMonth}: ReportProps) => {
+const Report = ({currentMonth, setCurrentMonth, monthlyTransactions, isLoading}: ReportProps) => {
   const commonPaperStyle = {
-    height: {xs: "auto", md: "400px"},
+    height: "400px",
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
+    p: 2,
   }
   return (
     <Grid container spacing={2}>
@@ -31,7 +35,7 @@ const Report = ({currentMonth, setCurrentMonth}: ReportProps) => {
       <Grid item xs={12} md={8}>
         <Paper sx={commonPaperStyle}>
           {/* 棒グラフ */}
-          <BarChart/>
+          <BarChart monthlyTransactions={monthlyTransactions} isLoading={isLoading}/>
         </Paper>
       </Grid>
       <Grid item xs={12}>
