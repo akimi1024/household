@@ -15,10 +15,10 @@ interface ReportProps{
 
 const Report = ({currentMonth, setCurrentMonth, monthlyTransactions, isLoading}: ReportProps) => {
   const commonPaperStyle = {
-    height: {xs: "auto", md: "400px"},
+    height: "400px",
     display: "flex",
     flexDirection: "column",
-    p: 2
+    p: 2,
   }
   return (
     <Grid container spacing={2}>
