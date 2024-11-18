@@ -40,7 +40,7 @@ const SidBar = ({drawerWidth, mobileOpen, handleDrawerTransitionEnd, handleDrawe
     {text: "Home", path: "/", icon: HomeIcon},
     {text: "Report", path: "/report", icon: EqualizerIcon},
   ]
-  
+
   const drawer = (
     <div>
       <Toolbar />
@@ -48,7 +48,6 @@ const SidBar = ({drawerWidth, mobileOpen, handleDrawerTransitionEnd, handleDrawe
       <List>
         {MenuItems.map((item, index) => (
           <NavLink key={item.text} to={item.path} style={({isActive}) => {
-            console.log("選択されたメニューは", item.text, isActive)
             return {
               ...baseLinkStyle,
               ...(isActive ? activeLinkStyle : {})
@@ -66,9 +65,9 @@ const SidBar = ({drawerWidth, mobileOpen, handleDrawerTransitionEnd, handleDrawe
           </NavLink>
         ))}
       </List>
-     </div>
+    </div>
   );
-  
+
   return (
           <Box
           component="nav"
@@ -91,7 +90,7 @@ const SidBar = ({drawerWidth, mobileOpen, handleDrawerTransitionEnd, handleDrawe
           >
             {drawer}
           </Drawer>
-  
+
           {/* PC用 */}
           <Drawer
             variant="permanent"
@@ -104,7 +103,7 @@ const SidBar = ({drawerWidth, mobileOpen, handleDrawerTransitionEnd, handleDrawe
             {drawer}
           </Drawer>
         </Box>
-  
+
   )
 }
 
