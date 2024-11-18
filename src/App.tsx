@@ -144,7 +144,11 @@ function App() {
               onUpdateTransaction={handleUpdateTransaction}
             />}
             />
-            <Route path="/report" element={<Report currentMonth={currentMonth} setCurrentMonth={setCurrentMonth}/>} />
+            <Route path="/report" element={<Report
+              currentMonth={currentMonth}
+              setCurrentMonth={setCurrentMonth}
+              monthlyTransactions={monthlyTransactions}/>
+            }/>
             <Route path="*" element={<NoMatch />} />
           </Route>
         </Routes>
