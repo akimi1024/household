@@ -3,9 +3,13 @@ import {
   Box,
   Button,
   ButtonGroup,
+  FormControl,
+  FormHelperText,
   IconButton,
+  InputLabel,
   ListItemIcon,
   MenuItem,
+  Select,
   Stack,
   TextField,
   Typography,
@@ -102,23 +106,23 @@ const TransactionForm = ({
 
   // 送信処理
   const onSubmit: SubmitHandler<Schema> = (data) => {
-    if(selectedTransaction) {
+    if (selectedTransaction) {
       onUpdateTransaction(data, selectedTransaction.id)
-      .then(() => {
-        console.log("更新しました")
-        setSelectedTransaction(null)
-      })
-      .catch((error) => {
-        console.error(error)
-      })
+        .then(() => {
+          console.log("更新しました")
+          setSelectedTransaction(null)
+        })
+        .catch((error) => {
+          console.error(error)
+        })
     } else {
       onSaveTransaction(data)
-      .then(() => {
-        console.log("保存しました")
-      })
-      .catch((error) => {
-        console.error(error)
-      })
+        .then(() => {
+          console.log("保存しました")
+        })
+        .catch((error) => {
+          console.error(error)
+        })
     }
 
     reset({
@@ -132,7 +136,7 @@ const TransactionForm = ({
 
   useEffect(() => {
     // 選択肢が更新されたか確認
-    if(selectedTransaction){
+    if (selectedTransaction) {
       const categoryExists = categories.some((category) => category.label === selectedTransaction.category)
       setValue("category", categoryExists ? selectedTransaction.category : "")
     }
@@ -160,7 +164,7 @@ const TransactionForm = ({
   }, [currentDay, setValue])
 
   const handleDelete = () => {
-    if(selectedTransaction) {
+    if (selectedTransaction) {
       onDeleteTransaction(selectedTransaction.id)
       setSelectedTransaction(null)
     }
@@ -248,19 +252,23 @@ const TransactionForm = ({
             name="category"
             control={control}
             render={({ field }) => (
-              <TextField
-                error={!!errors.category}
-                helperText={errors.category?.message}
-                {...field}
-                id="カテゴリ"
-                label="カテゴリ" select>
-                {categories.map((category, index) => (
-                  <MenuItem value={category.label} key={index}>
-                    <ListItemIcon>{category.icon}</ListItemIcon>
-                    {category.label}
-                  </MenuItem>
-                ))}
-              </TextField>
+              <FormControl fullWidth error={!!errors.category}>
+                <InputLabel id="category-select-label">カテゴリ</InputLabel>
+                <Select
+                  {...field}
+                  labelId="category-select-label"
+                  id="category-select"
+                  label="カテゴリ"
+                >
+                  {categories.map((category, index) => (
+                    <MenuItem value={category.label} key={index}>
+                      <ListItemIcon>{category.icon}</ListItemIcon>
+                      {category.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <FormHelperText>{errors.category?.message}</FormHelperText>
+              </FormControl>
             )}
           />
 
