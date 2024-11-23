@@ -90,46 +90,6 @@ function getComparator<Key extends keyof any>(
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-interface HeadCell {
-  disablePadding: boolean;
-  id: keyof Data;
-  label: string;
-  numeric: boolean;
-}
-
-const headCells: readonly HeadCell[] = [
-  {
-    id: 'name',
-    numeric: false,
-    disablePadding: true,
-    label: 'Dessert (100g serving)',
-  },
-  {
-    id: 'calories',
-    numeric: true,
-    disablePadding: false,
-    label: 'Calories',
-  },
-  {
-    id: 'fat',
-    numeric: true,
-    disablePadding: false,
-    label: 'Fat (g)',
-  },
-  {
-    id: 'carbs',
-    numeric: true,
-    disablePadding: false,
-    label: 'Carbs (g)',
-  },
-  {
-    id: 'protein',
-    numeric: true,
-    disablePadding: false,
-    label: 'Protein (g)',
-  },
-];
-
 interface _TransactionTableProps {
   numSelected: number;
   onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
@@ -152,6 +112,9 @@ function TransactionTableHead(props: _TransactionTableProps) {
       onRequestSort(event, property);
     };
 
+    console.log({rowCount})
+    console.log({numSelected})
+
   return (
     <TableHead>
       <TableRow>
@@ -166,27 +129,11 @@ function TransactionTableHead(props: _TransactionTableProps) {
             }}
           />
         </TableCell>
-        {headCells.map((headCell) => (
-          <TableCell
-            key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
-            padding={headCell.disablePadding ? 'none' : 'normal'}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </Box>
-              ) : null}
-            </TableSortLabel>
-          </TableCell>
-        ))}
+
+        <TableCell align={"left"}>日付</TableCell>
+        <TableCell align={"left"}>カテゴリ</TableCell>
+        <TableCell align={"left"}>金額</TableCell>
+        <TableCell align={"left"}>内容</TableCell>
       </TableRow>
     </TableHead>
   );
@@ -231,19 +178,13 @@ function TransactionTableToolbar(props: TransactionTableToolbarProps) {
           id="tableTitle"
           component="div"
         >
-          Nutrition
+          月の収支
         </Typography>
       )}
-      {numSelected > 0 ? (
+      {numSelected > 0 && (
         <Tooltip title="Delete">
           <IconButton>
             <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
           </IconButton>
         </Tooltip>
       )}
@@ -390,7 +331,6 @@ export default function TransactionTable({ monthlyTransactions }: TransactionTab
 
           {/* ツールバー */}
           <TransactionTableToolbar numSelected={selected.length} />
-
           {/* 取引一覧 */}
           <TableContainer>
             <Table
@@ -404,7 +344,7 @@ export default function TransactionTable({ monthlyTransactions }: TransactionTab
                 orderBy={orderBy}
                 onSelectAllClick={handleSelectAllClick}
                 onRequestSort={handleRequestSort}
-                rowCount={rows.length}
+                rowCount={monthlyTransactions.length}
               />
               <TableBody>
                 {visibleRows.map((row, index) => {
