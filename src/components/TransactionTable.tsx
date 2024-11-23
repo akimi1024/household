@@ -21,6 +21,7 @@ import { visuallyHidden } from '@mui/utils';
 import { Transaction } from '../types';
 import { financeCalculations } from '../utils/financeCalculations';
 import { Grid } from '@mui/material';
+import { formantCurrency } from '../utils/formatting';
 
 interface Data {
   id: number;
@@ -256,11 +257,28 @@ interface FinanceCalItemProps {
   color: string
 }
 
+/**
+ * 収支表示プロップス
+ * @param FinanceCalItemProp
+ * @returns
+*/
 function FinanceCalItem({ title, value, color }: FinanceCalItemProps) {
   return (
-    <Grid item>
-      <Typography>title</Typography>
-      <Typography sx={{ color: color }}>¥{value}</Typography>
+    <Grid item xs={4} textAlign={"center"}>
+      <Typography variant="subtitle1" component={"div"}>
+        {title}
+      </Typography>
+      <Typography
+        fontWeight={"fontWeightBold"}
+        component={"span"}
+        sx={{
+          color: color,
+          fontSize: {xs: ".8rem", sm: "1rem", md: "1.2rem"},
+          wordBreak: 'break-word'
+        }}
+      >
+        ¥{formantCurrency(value)}
+      </Typography>
     </Grid>
   )
 }
@@ -330,9 +348,9 @@ export default function TransactionTable({ monthlyTransactions }: TransactionTab
     setPage(0);
   };
 
-  const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDense(event.target.checked);
-  };
+  // const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setDense(event.target.checked);
+  // };
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -351,8 +369,8 @@ export default function TransactionTable({ monthlyTransactions }: TransactionTab
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-
-        <Grid container>
+        {/* 収支表示エリア */}
+        <Grid container sx={{borderBottom: "1px solid rgba(224, 224, 224, 1)"}}>
           <FinanceCalItem
             title={"収入"}
             value={income}
