@@ -91,14 +91,17 @@ function App() {
 
   /**
    * データ削除処理
-   * @param transactionId
+   * @param transactionIds
    */
-  const handleDeleteTransaction = async (transactionId: string) => {
+  const handleDeleteTransaction = async (transactionIds: string | readonly string[]) => {
     try {
-      // firestoreのデータを削除
-      await deleteDoc(doc(db, "Transactions", transactionId));
+      const idsToDelete = Array.isArray(transactionIds) ? transactionIds : [transactionIds]
+      for (const id of idsToDelete) {
+        // firestoreのデータを削除
+        await deleteDoc(doc(db, "Transactions", id));
+      }
 
-      const filteredTransaction = transactions.filter((transaction) => transaction.id !== transactionId)
+      const filteredTransaction = transactions.filter((transaction) => !idsToDelete.includes(transaction.id))
       setTransactions(filteredTransaction)
     } catch (err) {
       if (isFireStoreError(err)) {
@@ -122,7 +125,7 @@ function App() {
       await updateDoc(docRef, transaction);
 
       // フロント更新
-      const updatedTransactions = transactions.map((t) => t.id === transactionId ? {...t, ...transaction} : t) as Transaction[]
+      const updatedTransactions = transactions.map((t) => t.id === transactionId ? { ...t, ...transaction } : t) as Transaction[]
       setTransactions(updatedTransactions)
     } catch (err) {
       if (isFireStoreError(err)) {
@@ -151,8 +154,9 @@ function App() {
               currentMonth={currentMonth}
               setCurrentMonth={setCurrentMonth}
               monthlyTransactions={monthlyTransactions}
-              isLoading={isLoading}/>
-            }/>
+              isLoading={isLoading}
+              onDeleteTransaction={handleDeleteTransaction} />
+            } />
             <Route path="*" element={<NoMatch />} />
           </Route>
         </Routes>
