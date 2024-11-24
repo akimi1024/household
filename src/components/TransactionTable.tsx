@@ -20,6 +20,7 @@ import { financeCalculations } from '../utils/financeCalculations';
 import { Grid } from '@mui/material';
 import { formantCurrency } from '../utils/formatting';
 import iconComponents from './common/iconComponents';
+import { compareDesc, parseISO } from 'date-fns';
 
 interface Data {
   id: number;
@@ -110,8 +111,8 @@ function TransactionTableHead(props: _TransactionTableProps) {
       onRequestSort(event, property);
     };
 
-    console.log({rowCount})
-    console.log({numSelected})
+  console.log({ rowCount })
+  console.log({ numSelected })
 
   return (
     <TableHead>
@@ -212,7 +213,7 @@ function FinanceCalItem({ title, value, color }: FinanceCalItemProps) {
         component={"span"}
         sx={{
           color: color,
-          fontSize: {xs: ".8rem", sm: "1rem", md: "1.2rem"},
+          fontSize: { xs: ".8rem", sm: "1rem", md: "1.2rem" },
           wordBreak: 'break-word'
         }}
       >
@@ -293,12 +294,15 @@ export default function TransactionTable({ monthlyTransactions }: TransactionTab
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - monthlyTransactions.length) : 0;
 
+  // 取引データから表示件数分取得
   const visibleRows = React.useMemo(
-    () =>{
-      const copyMonthlyTransactions = [...monthlyTransactions]
-        return copyMonthlyTransactions.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+    () => {
+      const sortedMonthlyTransactions = [...monthlyTransactions].sort((a,b) =>
+        compareDesc(parseISO(a.date), parseISO(b.date))
+      )
+      return sortedMonthlyTransactions.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
     }, [monthlyTransactions, page, rowsPerPage]);
 
   const { income, expense, balance } = financeCalculations(monthlyTransactions)
@@ -307,7 +311,7 @@ export default function TransactionTable({ monthlyTransactions }: TransactionTab
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
         {/* 収支表示エリア */}
-        <Grid container sx={{borderBottom: "1px solid rgba(224, 224, 224, 1)"}}>
+        <Grid container sx={{ borderBottom: "1px solid rgba(224, 224, 224, 1)" }}>
           <FinanceCalItem
             title={"収入"}
             value={income}
@@ -325,89 +329,89 @@ export default function TransactionTable({ monthlyTransactions }: TransactionTab
           />
         </Grid>
 
-          {/* ツールバー */}
-          <TransactionTableToolbar numSelected={selected.length} />
-          {/* 取引一覧 */}
-          <TableContainer>
-            <Table
-              sx={{ minWidth: 750 }}
-              aria-labelledby="tableTitle"
-              size={dense ? 'small' : 'medium'}
-            >
-              <TransactionTableHead
-                numSelected={selected.length}
-                order={order}
-                orderBy={orderBy}
-                onSelectAllClick={handleSelectAllClick}
-                onRequestSort={handleRequestSort}
-                rowCount={monthlyTransactions.length}
-              />
-              {/* 取引内容 */}
-              <TableBody>
-                {visibleRows.map((transaction, index) => {
-                  const isItemSelected = selected.includes(transaction.id);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+        {/* ツールバー */}
+        <TransactionTableToolbar numSelected={selected.length} />
+        {/* 取引一覧 */}
+        <TableContainer>
+          <Table
+            sx={{ minWidth: 750 }}
+            aria-labelledby="tableTitle"
+            size={dense ? 'small' : 'medium'}
+          >
+            <TransactionTableHead
+              numSelected={selected.length}
+              order={order}
+              orderBy={orderBy}
+              onSelectAllClick={handleSelectAllClick}
+              onRequestSort={handleRequestSort}
+              rowCount={monthlyTransactions.length}
+            />
+            {/* 取引内容 */}
+            <TableBody>
+              {visibleRows.map((transaction, index) => {
+                const isItemSelected = selected.includes(transaction.id);
+                const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, transaction.id)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={transaction.id}
-                      selected={isItemSelected}
-                      sx={{ cursor: 'pointer' }}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            'aria-labelledby': labelId,
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                      >
-                        {transaction.date}
-                      </TableCell>
-                      <TableCell align='left' sx={{display: "flex", alignItems: "center"}}>
-                          {iconComponents[transaction.category]}
-                          {transaction.category}
-                      </TableCell>
-                      <TableCell align="left">{transaction.amount}</TableCell>
-                      <TableCell align="left">{transaction.content}</TableCell>
-                    </TableRow>
-                  );
-                })}
-                {emptyRows > 0 && (
+                return (
                   <TableRow
-                    style={{
-                      height: (dense ? 33 : 53) * emptyRows,
-                    }}
+                    hover
+                    onClick={(event) => handleClick(event, transaction.id)}
+                    role="checkbox"
+                    aria-checked={isItemSelected}
+                    tabIndex={-1}
+                    key={transaction.id}
+                    selected={isItemSelected}
+                    sx={{ cursor: 'pointer' }}
                   >
-                    <TableCell colSpan={6} />
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        color="primary"
+                        checked={isItemSelected}
+                        inputProps={{
+                          'aria-labelledby': labelId,
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell
+                      component="th"
+                      id={labelId}
+                      scope="row"
+                      padding="none"
+                    >
+                      {transaction.date}
+                    </TableCell>
+                    <TableCell align='left' sx={{ display: "flex", alignItems: "center" }}>
+                      {iconComponents[transaction.category]}
+                      {transaction.category}
+                    </TableCell>
+                    <TableCell align="left">{transaction.amount}</TableCell>
+                    <TableCell align="left">{transaction.content}</TableCell>
                   </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                );
+              })}
+              {emptyRows > 0 && (
+                <TableRow
+                  style={{
+                    height: (53) * emptyRows,
+                  }}
+                >
+                  <TableCell colSpan={6} />
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
 
-          {/* テーブル下部 */}
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+        {/* テーブル下部 */}
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={monthlyTransactions.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </Paper>
     </Box>
   );
