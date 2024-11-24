@@ -62,6 +62,7 @@ function TransactionTableHead(props: _TransactionTableProps) {
 }
 interface TransactionTableToolbarProps {
   numSelected: number;
+  onDelete: () => void
 }
 
 /**
@@ -70,7 +71,7 @@ interface TransactionTableToolbarProps {
  * @returns
  */
 function TransactionTableToolbar(props: TransactionTableToolbarProps) {
-  const { numSelected } = props;
+  const { numSelected, onDelete } = props;
   return (
     <Toolbar
       sx={[
@@ -105,7 +106,7 @@ function TransactionTableToolbar(props: TransactionTableToolbarProps) {
       )}
       {numSelected > 0 && (
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton onClick={onDelete}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>
@@ -147,14 +148,15 @@ function FinanceCalItem({ title, value, color }: FinanceCalItemProps) {
 }
 
 interface TransactionTableProps {
-  monthlyTransactions: Transaction[]
+  monthlyTransactions: Transaction[],
+  onDeleteTransaction: (transactionId: string | readonly string[]) => Promise<void>
 }
 
 /**
  * テーブル作成メソッド
  * @returns
  */
-export default function TransactionTable({ monthlyTransactions }: TransactionTableProps) {
+export default function TransactionTable({ monthlyTransactions, onDeleteTransaction }: TransactionTableProps) {
 
   const theme = useTheme()
 
@@ -199,6 +201,11 @@ export default function TransactionTable({ monthlyTransactions }: TransactionTab
     setPage(0);
   };
 
+  const handleDelete = () => {
+    onDeleteTransaction(selected)
+    setSelected([])
+  }
+
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - monthlyTransactions.length) : 0;
@@ -206,7 +213,7 @@ export default function TransactionTable({ monthlyTransactions }: TransactionTab
   // 取引データから表示件数分取得
   const visibleRows = React.useMemo(
     () => {
-      const sortedMonthlyTransactions = [...monthlyTransactions].sort((a,b) =>
+      const sortedMonthlyTransactions = [...monthlyTransactions].sort((a, b) =>
         compareDesc(parseISO(a.date), parseISO(b.date))
       )
       return sortedMonthlyTransactions.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -237,7 +244,7 @@ export default function TransactionTable({ monthlyTransactions }: TransactionTab
         </Grid>
 
         {/* ツールバー */}
-        <TransactionTableToolbar numSelected={selected.length} />
+        <TransactionTableToolbar numSelected={selected.length} onDelete={handleDelete} />
         {/* 取引一覧 */}
         <TableContainer>
           <Table
