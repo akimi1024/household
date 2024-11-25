@@ -16,7 +16,7 @@ interface SidBarProps {
   drawerWidth: number,
   mobileOpen: boolean,
   handleDrawerTransitionEnd: () => void,
-  handleDrawerClose: () => void,
+  handleDrawerClose: () => void
 }
 
 interface menuItem {
