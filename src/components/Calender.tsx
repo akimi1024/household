@@ -16,10 +16,11 @@ interface CalenderProps {
   setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>,
   setCurrentDay: React.Dispatch<React.SetStateAction<string>>,
   currentDay: string,
-  today: string
+  today: string,
+  onDateClick: (dateInfo: DateClickArg) => void
 }
 
-const Calender = ({monthlyTransactions, setCurrentMonth, setCurrentDay, currentDay, today}: CalenderProps) => {
+const Calender = ({monthlyTransactions, setCurrentMonth, setCurrentDay, currentDay, today, onDateClick}: CalenderProps) => {
 
   const theme = useTheme()
 
@@ -80,10 +81,6 @@ const Calender = ({monthlyTransactions, setCurrentMonth, setCurrentDay, currentD
     }
   }
 
-  const handleDateClick = (dateInfo: DateClickArg) => {
-    setCurrentDay(dateInfo.dateStr)
-  }
-
   return (
     <FullCalendar
       locale={jaLocale}
@@ -92,7 +89,7 @@ const Calender = ({monthlyTransactions, setCurrentMonth, setCurrentDay, currentD
       events={[...calenderEvents, backgroundEvent]}
       eventContent={renderEventContent}
       datesSet={handleDateSet}
-      dateClick={handleDateClick}
+      dateClick={onDateClick}
     />
   )
 }
