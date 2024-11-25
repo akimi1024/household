@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Box, useMediaQuery, useTheme } from '@mui/material'
 import React, { useState } from 'react'
 import MonthlySummary from '../components/MonthlySummary'
 import Calender from '../components/Calender'
@@ -27,6 +27,10 @@ const Home = ({
   const [currentDay, setCurrentDay] = useState(today)
   const [isEntryDrawerOpen, setIsEntryDrawerOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+
+  const theme = useTheme()
+
+  const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
 
   const dailyTransactions = monthlyTransactions.filter((transaction) => {
     return transaction.date === currentDay
@@ -74,7 +78,8 @@ const Home = ({
           dailyTransactions={dailyTransactions}
           currentDay={currentDay}
           handleAddTransactionForm={handleAddTransactionForm}
-          onSelectTransaction={handleSelectTransaction} />
+          onSelectTransaction={handleSelectTransaction}
+          isMobile={isMobile} />
         <TransactionForm
           isEntryDrawerOpen={isEntryDrawerOpen}
           onCloseForm={CloseForm}
