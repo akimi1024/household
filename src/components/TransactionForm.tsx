@@ -27,10 +27,11 @@ import WorkIcon from "@mui/icons-material/Work"
 import AddBusinessIcon from "@mui/icons-material/AddBusiness"
 import SavingsIcon from "@mui/icons-material/Savings"
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ExpenseCategory, IncomeCategory, Transaction } from "../types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Schema, transactionSchema } from "../validations/Schema";
+import { AppContext, useAppContext } from "../context/AppContext";
 
 interface TransactionFormProps {
   isEntryDrawerOpen: boolean,
@@ -66,6 +67,10 @@ const TransactionForm = ({
   isDialogOpen,
   setIsDialogOpen
 }: TransactionFormProps) => {
+
+  const context = useAppContext()
+  console.log(context)
+
   const formWidth = 320;
 
   const expenseCategories: CategoryItem[] = [

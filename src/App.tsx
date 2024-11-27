@@ -13,6 +13,7 @@ import { addDoc, collection, deleteDoc, doc, getDocs, updateDoc } from "firebase
 import { db } from './firebase';
 import { formatMonth } from './utils/formatting';
 import { Schema } from './validations/Schema';
+import { AppContextProvider, useAppContext } from './context/AppContext';
 
 function App() {
 
@@ -137,31 +138,33 @@ function App() {
   }
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Router>
-        <Routes>
-          <Route path="/" element={<AppLayout />}>
-            <Route index element={<Home
-              monthlyTransactions={monthlyTransactions}
-              setCurrentMonth={setCurrentMonth}
-              onSaveTransaction={handleSaveTransaction}
-              onDeleteTransaction={handleDeleteTransaction}
-              onUpdateTransaction={handleUpdateTransaction}
-            />}
-            />
-            <Route path="/report" element={<Report
-              currentMonth={currentMonth}
-              setCurrentMonth={setCurrentMonth}
-              monthlyTransactions={monthlyTransactions}
-              isLoading={isLoading}
-              onDeleteTransaction={handleDeleteTransaction} />
-            } />
-            <Route path="*" element={<NoMatch />} />
-          </Route>
-        </Routes>
-      </Router>
-    </ThemeProvider>
+    <AppContextProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Router>
+          <Routes>
+            <Route path="/" element={<AppLayout />}>
+              <Route index element={<Home
+                monthlyTransactions={monthlyTransactions}
+                setCurrentMonth={setCurrentMonth}
+                onSaveTransaction={handleSaveTransaction}
+                onDeleteTransaction={handleDeleteTransaction}
+                onUpdateTransaction={handleUpdateTransaction}
+              />}
+              />
+              <Route path="/report" element={<Report
+                currentMonth={currentMonth}
+                setCurrentMonth={setCurrentMonth}
+                monthlyTransactions={monthlyTransactions}
+                isLoading={isLoading}
+                onDeleteTransaction={handleDeleteTransaction} />
+              } />
+              <Route path="*" element={<NoMatch />} />
+            </Route>
+          </Routes>
+        </Router>
+      </ThemeProvider>
+    </AppContextProvider>
   );
 }
 
