@@ -13,19 +13,14 @@ import { addDoc, collection, deleteDoc, doc, getDocs, updateDoc } from "firebase
 import { db } from './firebase';
 import { formatMonth } from './utils/formatting';
 import { Schema } from './validations/Schema';
-import { AppContextProvider, useAppContext } from './context/AppContext';
+import { AppContextProvider } from './context/AppContext';
+import { isFireStoreError } from './utils/errorHandling';
 
 function App() {
-
-  // FireStoreエラーかどうかを判定する型ガード
-  function isFireStoreError(err: unknown): err is { code: string, message: string } {
-    return typeof err === "object" && err !== null && "code" in err
-  }
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [isLoading, setIsLoading] = useState(true)
-
 
   // firestoreのデータを全て取得
   useEffect(() => {
