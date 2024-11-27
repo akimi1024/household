@@ -8,10 +8,47 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { Outlet } from 'react-router-dom';
 import SidBar from '../common/SidBar';
+import { useAppContext } from '../../context/AppContext';
+import { useEffect } from 'react';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../../firebase';
+import { Transaction } from '../../types';
+import { isFireStoreError } from '../../utils/errorHandling';
 
 const drawerWidth = 240;
 
 export default function AppLayout() {
+  const {setTransactions, setIsLoading } = useAppContext()
+
+    // firestoreのデータを全て取得
+    useEffect(() => {
+      const fetchTransactions = async () => {
+        try {
+          const querySnapshot = await getDocs(collection(db, "Transactions"));
+
+          const transactionData = querySnapshot.docs.map((doc) => {
+            return {
+              ...doc.data(),
+              id: doc.id,
+            } as Transaction
+          });
+
+          setTransactions(transactionData)
+        } catch (err) {
+          if (isFireStoreError(err)) {
+            console.error("firestoreエラー: ", err)
+          } else {
+            console.error("一般的なエラー: ", err)
+          }
+        } finally {
+          setIsLoading(false)
+        }
+      }
+
+      fetchTransactions();
+    }, [])
+
+
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
 
@@ -62,8 +99,8 @@ export default function AppLayout() {
           </Typography>
         </Toolbar>
       </AppBar>
-    
-      <SidBar 
+
+      <SidBar
         drawerWidth = {drawerWidth}
         mobileOpen = {mobileOpen}
         handleDrawerTransitionEnd = {handleDrawerTransitionEnd}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import Home from './pages/Home';
@@ -9,7 +9,7 @@ import { theme } from './theme/theme'
 import { ThemeProvider } from '@emotion/react';
 import { CssBaseline } from '@mui/material';
 import { Transaction } from './types/index';
-import { addDoc, collection, deleteDoc, doc, getDocs, updateDoc } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from './firebase';
 import { formatMonth } from './utils/formatting';
 import { Schema } from './validations/Schema';
@@ -22,38 +22,7 @@ function App() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [isLoading, setIsLoading] = useState(true)
 
-  // firestoreのデータを全て取得
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "Transactions"));
 
-        const transactionData = querySnapshot.docs.map((doc) => {
-          return {
-            ...doc.data(),
-            id: doc.id,
-          } as Transaction
-        });
-
-        setTransactions(transactionData)
-      } catch (err) {
-        if (isFireStoreError(err)) {
-          console.error("firestoreエラー: ", err)
-        } else {
-          console.error("一般的なエラー: ", err)
-        }
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchTransactions();
-  }, [])
-
-  // 一月分のデータのみ抽出
-  const monthlyTransactions = transactions.filter((transaction) => {
-    return transaction.date.startsWith(formatMonth(currentMonth));
-  })
 
   /**
    * 取引データ保存処理
@@ -84,6 +53,11 @@ function App() {
       }
     }
   }
+
+  // 一月分のデータのみ抽出
+  const monthlyTransactions = transactions.filter((transaction) => {
+    return transaction.date.startsWith(formatMonth(currentMonth));
+  })
 
   /**
    * データ削除処理
