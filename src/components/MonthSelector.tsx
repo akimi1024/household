@@ -3,13 +3,11 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3'
 import { addMonths } from 'date-fns'
 import { ja } from 'date-fns/locale'
+import { useAppContext } from '../context/AppContext'
 
-interface MonthSelectorProps {
-  currentMonth: Date,
-  setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>
-}
+const MonthSelector = () => {
 
-const MonthSelector = ({currentMonth, setCurrentMonth}: MonthSelectorProps) => {
+  const {currentMonth, setCurrentMonth} = useAppContext()
 
   // 先月押下時のセット処理
   const handlePreviousMonth = () => {

@@ -18,13 +18,13 @@ import DailySummary from "./DailySummary";
 import { Transaction } from "../types";
 import { formantCurrency } from "../utils/formatting";
 import iconComponents from "./common/iconComponents";
+import { useAppContext } from "../context/AppContext";
 
 interface TransactionMenuProps {
   dailyTransactions: Transaction[],
   currentDay: string,
   handleAddTransactionForm: () => void,
   onSelectTransaction: (transaction: Transaction) => void,
-  isMobile: boolean,
   open: boolean,
   onClose: () => void
 }
@@ -34,10 +34,11 @@ const TransactionMenu = ({
   currentDay,
   handleAddTransactionForm,
   onSelectTransaction,
-  isMobile,
   open,
   onClose
 }: TransactionMenuProps) => {
+  const { isMobile } = useAppContext()
+
   const menuDrawerWidth = 320;
   return (
     <Drawer
@@ -68,7 +69,7 @@ const TransactionMenu = ({
     >
       <Stack sx={{ height: "100%" }} spacing={2}>
         <Typography fontWeight={"fontWeightBold"}>日時： {currentDay}</Typography>
-        <DailySummary dailyTransactions={dailyTransactions} columns={isMobile ? 3 : 2}/>
+        <DailySummary dailyTransactions={dailyTransactions} columns={isMobile ? 3 : 2} />
         {/* 内訳タイトル&内訳追加ボタン */}
         <Box
           sx={{
