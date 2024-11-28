@@ -15,12 +15,13 @@ import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Transaction } from '../types';
 import { financeCalculations } from '../utils/financeCalculations';
 import { Grid } from '@mui/material';
 import { formantCurrency } from '../utils/formatting';
 import iconComponents from './common/iconComponents';
 import { compareDesc, parseISO } from 'date-fns';
+import useMonthlyTransactions from '../hooks/useMonthlyTransactions';
+import { useAppContext } from '../context/AppContext';
 
 interface _TransactionTableProps {
   numSelected: number;
@@ -147,16 +148,13 @@ function FinanceCalItem({ title, value, color }: FinanceCalItemProps) {
   )
 }
 
-interface TransactionTableProps {
-  monthlyTransactions: Transaction[],
-  onDeleteTransaction: (transactionId: string | readonly string[]) => Promise<void>
-}
-
 /**
  * テーブル作成メソッド
  * @returns
  */
-export default function TransactionTable({ monthlyTransactions, onDeleteTransaction }: TransactionTableProps) {
+export default function TransactionTable() {
+  const monthlyTransactions = useMonthlyTransactions()
+  const { onDeleteTransaction } = useAppContext()
 
   const theme = useTheme()
 

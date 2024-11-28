@@ -3,39 +3,46 @@ import React from 'react'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
-import { Transaction } from '../types';
 import { financeCalculations } from '../utils/financeCalculations';
 import { formantCurrency } from '../utils/formatting';
+import useMonthlyTransactions from '../hooks/useMonthlyTransactions';
 
-interface MonthlySummaryProps {
-  monthlyTransactions: Transaction[]
-}
+// interface MonthlySummaryProps {
+//   monthlyTransactions: Transaction[]
+// }
 
-function MonthlySummary({monthlyTransactions}: MonthlySummaryProps) {
-  const {income, expense, balance} = financeCalculations(monthlyTransactions)
+function MonthlySummary(
+  // {
+  //   monthlyTransactions
+  // }: MonthlySummaryProps
+) {
+  const monthlyTransactions = useMonthlyTransactions()
+  const { income, expense, balance } = financeCalculations(monthlyTransactions)
   return (
-    <Grid container spacing={{xs: 1, sm: 2}} mb={2}>
+    <Grid container spacing={{ xs: 1, sm: 2 }} mb={2}>
       {/* 収入 */}
       <Grid item xs={4} display={"flex"} flexDirection={"column"}>
         <Card sx={{
-          bgcolor: (theme) => theme.palette.incomeColor.main ,
+          bgcolor: (theme) => theme.palette.incomeColor.main,
           color: 'white',
           borderRadius: "10px",
-          flexGrow: 1}}>
-          <CardContent sx={{padding: {xs: 1, sm: 2}}}>
+          flexGrow: 1
+        }}>
+          <CardContent sx={{ padding: { xs: 1, sm: 2 } }}>
             <Stack direction={"row"}>
-              <ArrowUpwardIcon sx={{fontSize: "2erm"}} />
+              <ArrowUpwardIcon sx={{ fontSize: "2erm" }} />
               <Typography>収入</Typography>
             </Stack>
-              <Typography
+            <Typography
               textAlign={"right"}
               variant="h5"
               fontWeight={"fontWeightBold"}
-              sx={{wordBreak: "break-word",
-              fontSize: {xs: ".8rem", sm: "1rem", md: "1.2rem"},
+              sx={{
+                wordBreak: "break-word",
+                fontSize: { xs: ".8rem", sm: "1rem", md: "1.2rem" },
               }}>
-                ¥{formantCurrency(income)}
-              </Typography>
+              ¥{formantCurrency(income)}
+            </Typography>
           </CardContent>
         </Card>
       </Grid>
@@ -46,21 +53,23 @@ function MonthlySummary({monthlyTransactions}: MonthlySummaryProps) {
           bgcolor: (theme) => theme.palette.expenseColor.main,
           color: 'white',
           borderRadius: "10px",
-          flexGrow: 1}}>
-          <CardContent sx={{padding: {xs: 1, sm: 2}}}>
+          flexGrow: 1
+        }}>
+          <CardContent sx={{ padding: { xs: 1, sm: 2 } }}>
             <Stack direction={"row"}>
-              <ArrowDownwardIcon sx={{fontSize: "2erm"}} />
+              <ArrowDownwardIcon sx={{ fontSize: "2erm" }} />
               <Typography>支出</Typography>
             </Stack>
-              <Typography
+            <Typography
               textAlign={"right"}
               variant="h5"
               fontWeight={"fontWeightBold"}
-              sx={{wordBreak: "break-word",
-              fontSize: {xs: ".8rem", sm: "1rem", md: "1.2rem"},
+              sx={{
+                wordBreak: "break-word",
+                fontSize: { xs: ".8rem", sm: "1rem", md: "1.2rem" },
               }}>
-                ￥{formantCurrency(expense)}
-              </Typography>
+              ￥{formantCurrency(expense)}
+            </Typography>
           </CardContent>
         </Card>
       </Grid>
@@ -71,21 +80,23 @@ function MonthlySummary({monthlyTransactions}: MonthlySummaryProps) {
           bgcolor: (theme) => theme.palette.balanceColor.main,
           color: 'white',
           borderRadius: "10px",
-          flexGrow: 1}}>
-          <CardContent sx={{padding: {xs: 1, sm: 2}}}>
+          flexGrow: 1
+        }}>
+          <CardContent sx={{ padding: { xs: 1, sm: 2 } }}>
             <Stack direction={"row"}>
-              <AccountBalanceIcon sx={{fontSize: "2erm"}} />
+              <AccountBalanceIcon sx={{ fontSize: "2erm" }} />
               <Typography>収入</Typography>
             </Stack>
-              <Typography
+            <Typography
               textAlign={"right"}
               variant="h5"
               fontWeight={"fontWeightBold"}
-              sx={{wordBreak: "break-word",
-              fontSize: {xs: ".8rem", sm: "1rem", md: "1.2rem"},
+              sx={{
+                wordBreak: "break-word",
+                fontSize: { xs: ".8rem", sm: "1rem", md: "1.2rem" },
               }}>
-                ￥{formantCurrency(balance)}
-              </Typography>
+              ￥{formantCurrency(balance)}
+            </Typography>
           </CardContent>
         </Card>
       </Grid>

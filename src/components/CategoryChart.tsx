@@ -2,16 +2,16 @@ import React, { useState } from 'react'
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, ChartData } from 'chart.js';
 import { Box, CircularProgress, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Typography, useTheme } from '@mui/material';
-import { ExpenseCategory, IncomeCategory, Transaction, TransactionType } from '../types';
+import { ExpenseCategory, IncomeCategory, TransactionType } from '../types';
+import useMonthlyTransactions from '../hooks/useMonthlyTransactions';
+import { useAppContext } from '../context/AppContext';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-interface CategoryChartProps {
-  monthlyTransactions: Transaction[],
-  isLoading: boolean
-}
+const CategoryChart = () => {
+  const monthlyTransactions = useMonthlyTransactions()
+  const { isLoading } = useAppContext()
 
-const CategoryChart = ({ monthlyTransactions, isLoading }: CategoryChartProps) => {
   const theme = useTheme()
   const [selectedType, setSelectedType] = useState<TransactionType>("expense")
 
@@ -57,7 +57,7 @@ const CategoryChart = ({ monthlyTransactions, isLoading }: CategoryChartProps) =
   }
 
   const getCategoryColor = (category: IncomeCategory | ExpenseCategory): string => {
-    if(selectedType === "income"){
+    if (selectedType === "income") {
       return incomeCategoryColor[category as IncomeCategory]
     } else {
       return expenseCategoryColor[category as ExpenseCategory]

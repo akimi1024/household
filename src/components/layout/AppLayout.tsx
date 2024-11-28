@@ -46,7 +46,7 @@ export default function AppLayout() {
       }
 
       fetchTransactions();
-    }, [])
+    }, [setIsLoading, setTransactions])
 
 
   const [mobileOpen, setMobileOpen] = React.useState(false);

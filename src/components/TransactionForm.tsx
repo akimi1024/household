@@ -27,22 +27,18 @@ import WorkIcon from "@mui/icons-material/Work"
 import AddBusinessIcon from "@mui/icons-material/AddBusiness"
 import SavingsIcon from "@mui/icons-material/Savings"
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ExpenseCategory, IncomeCategory, Transaction } from "../types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Schema, transactionSchema } from "../validations/Schema";
-import { AppContext, useAppContext } from "../context/AppContext";
+import { useAppContext } from "../context/AppContext";
 
 interface TransactionFormProps {
   isEntryDrawerOpen: boolean,
   onCloseForm: () => void,
   currentDay: string,
-  onSaveTransaction: (transaction: Schema) => Promise<void>,
   selectedTransaction: Transaction | null,
-  onDeleteTransaction: (transactionId: string | readonly string[]) => Promise<void>,
   setSelectedTransaction: React.Dispatch<React.SetStateAction<Transaction | null>>,
-  onUpdateTransaction: (transaction: Schema, transactionId: string) => Promise<void>
-  isMobile: boolean
   isDialogOpen: boolean
   setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -58,18 +54,13 @@ const TransactionForm = ({
   isEntryDrawerOpen,
   onCloseForm,
   currentDay,
-  onSaveTransaction,
   selectedTransaction,
-  onDeleteTransaction,
   setSelectedTransaction,
-  onUpdateTransaction,
-  isMobile,
   isDialogOpen,
   setIsDialogOpen
 }: TransactionFormProps) => {
 
-  const context = useAppContext()
-  console.log(context)
+  const {onSaveTransaction, onDeleteTransaction, onUpdateTransaction, isMobile} = useAppContext()
 
   const formWidth = 320;
 
